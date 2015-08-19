@@ -1,7 +1,6 @@
 from flask import Flask, g, abort
-from authorization import Authorizator
-from authentication import Authenticator
-from auth_data_getters import simple_data_getter
+from authbone import Authorizator, Authenticator
+from authbone.auth_data_getters import simple_data_getter
 
 def authenticate(auth_data):
     if auth_data['username'] == 'admin' and auth_data['password'] == 'admin':
