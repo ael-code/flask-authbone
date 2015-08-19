@@ -3,29 +3,24 @@ from authorization import Authorizator
 from authentication import Authenticator
 from auth_data_getters import simple_data_getter
 
-class AuthenticationBackend(object):
+def authenticate(auth_data):
+    if auth_data['username'] == 'admin' and auth_data['password'] == 'admin':
+        return auth_data
+    if auth_data['username'] == 'user' and auth_data['password'] == 'user':
+        return auth_data
+    return None
 
-    def authenticate(self, auth_data):
-        if auth_data['username'] == 'admin' and auth_data['password'] == 'admin':
-            return auth_data
-        if auth_data['username'] == 'user' and auth_data['password'] == 'user':
-            return auth_data
-        return None
+def check_capability(identity, capability):
+    return identity['username'] == 'admin'
 
-class AuthorizationBackend(object):
+authenticator = Authenticator(simple_data_getter, authenticate)
 
-    def check_capability(self, identity, capability):
-        return identity['username'] == 'admin'
-
-authorizator = Authorizator(AuthorizationBackend())
-
-authenticator = Authenticator(simple_data_getter, AuthenticationBackend())
+authorizator = Authorizator(check_capability, authenticator)
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
 @app.route('/')
-@authenticator.requires_authentication
 @authorizator.requires_capability(None)
 def auth():
     if g.auth_identity:

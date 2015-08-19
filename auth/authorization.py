@@ -3,14 +3,12 @@ from functools import wraps
 
 class Authorizator(object):
 
-    def __init__(self, authorization_backend):
-        self.authorization_backend = authorization_backend
+    def __init__(self, check_capability_func, authenticator=None):
+        self.check_capability = check_capability_func
+        self.authenticator = authenticator
 
     def identity_getter(self):
         return g.auth_identity
-
-    def check_capability(self, identity, capability):
-        return self.authorization_backend.check_capability(identity, capability)
 
     def perform_authorization(self, capability):
         if not self.check_capability(self.identity_getter(), capability):
@@ -21,6 +19,8 @@ class Authorizator(object):
         def decorator(f):
             @wraps(f)
             def decorated(*args, **kwargs):
+                if self.authenticator:
+                    self.authenticator.perform_authentication()
                 self.perform_authorization(capability)
                 return f(*args, **kwargs)
             return decorated

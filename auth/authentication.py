@@ -4,12 +4,12 @@ from flask import g
 
 class Authenticator(object):
 
-    def __init__(self, auth_data_getter, authentication_backend):
+    def __init__(self, auth_data_getter, authenticate_func):
         self.auth_data_getter = auth_data_getter
-        self.authentication_backend = authentication_backend
+        self.authenticate = authenticate_func
 
     def auth_data_validator(self, auth_data):
-        return self.authentication_backend.authenticate(auth_data)
+        return self.authenticate(auth_data)
 
     def identity_elaborator(self, identity):
         g.auth_identity = identity
