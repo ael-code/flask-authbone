@@ -7,6 +7,8 @@ class Authenticator(object):
     def __init__(self, auth_data_getter, authenticate_func):
         self.auth_data_getter = auth_data_getter
         self.authenticate = authenticate_func
+        self.bad_auth_data_callback = def_bad_auth_data_callback
+        self.not_authenticated_callback = def_not_authenticated_callback
 
     def auth_data_validator(self, auth_data):
         return self.authenticate(auth_data)
@@ -27,9 +29,21 @@ class Authenticator(object):
     def requires_authentication(self, f):
         @wraps(f)
         def decorated(*args, **kwargs):
-            self.perform_authentication()
+            try:
+                self.perform_authentication()
+            except AuthDataDecodingException, e:
+                return self.bad_auth_data_callback(e)
+            except NotAuthenticatedException, e:
+                return self.not_authenticated_callback(e)
             return f(*args, **kwargs)
         return decorated
+
+
+def def_bad_auth_data_callback(authDataDecodingEx):
+        raise authDataDecodingEx
+
+def def_not_authenticated_callback(notAuthenticatedEx):
+        raise notAuthenticatedEx
 
 
 class AuthDataDecodingException(Exception):

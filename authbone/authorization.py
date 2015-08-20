@@ -19,10 +19,10 @@ class Authorizator(object):
         def decorator(f):
             @wraps(f)
             def decorated(*args, **kwargs):
-                if self.authenticator:
-                    self.authenticator.perform_authentication()
                 self.perform_authorization(capability)
                 return f(*args, **kwargs)
+            if self.authenticator:
+                return self.authenticator.requires_authentication(decorated)
             return decorated
         return decorator
 
