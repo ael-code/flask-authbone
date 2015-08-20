@@ -1,6 +1,7 @@
 from flask import g
 from functools import wraps
 
+
 class Authorizator(object):
 
     def __init__(self, check_capability_func, authenticator=None):

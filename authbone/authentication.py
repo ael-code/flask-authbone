@@ -42,6 +42,7 @@ class Authenticator(object):
 def def_bad_auth_data_callback(authDataDecodingEx):
         raise authDataDecodingEx
 
+
 def def_not_authenticated_callback(notAuthenticatedEx):
         raise notAuthenticatedEx
 

@@ -1,6 +1,7 @@
 from flask import request
 from authentication import AuthDataDecodingException
 
+
 def simple_data_getter():
     auth_data = dict()
     try:
@@ -14,6 +15,7 @@ def simple_data_getter():
         raise AuthDataDecodingException('bad credentials: missing "password"')
 
     return auth_data
+
 
 def basic_auth_getter():
     return request.authorization
