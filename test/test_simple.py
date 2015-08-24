@@ -1,6 +1,6 @@
 from flask import Flask, g, abort
 from authbone import Authorizator, Authenticator
-from authbone.auth_data_getters import simple_data_getter
+from authbone.auth_data_getters import form_data_getter
 
 
 def authenticate(auth_data):
@@ -14,7 +14,7 @@ def authenticate(auth_data):
 def check_capability(identity, capability):
     return identity['username'] == 'admin'
 
-authenticator = Authenticator(simple_data_getter, authenticate)
+authenticator = Authenticator(form_data_getter, authenticate)
 
 authorizator = Authorizator(check_capability, authenticator)
 
