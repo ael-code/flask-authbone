@@ -12,9 +12,9 @@ def authenticate(auth_data):
 def send_401(ex):
     """Sends a 401 response that enables basic auth"""
     return Response(
-    'Could not verify your access level for that URL.\n'
-    'You have to login with proper credentials', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+        'Could not verify your access level for that URL.\n'
+        'You have to login with proper credentials', 401,
+        {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 authenticator = Authenticator(basic_auth_getter, authenticate)
 authenticator.bad_auth_data_callback = send_401
