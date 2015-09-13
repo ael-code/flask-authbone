@@ -4,9 +4,13 @@ from functools import wraps
 
 class Authorizator(object):
 
-    def __init__(self, check_capability_func, authenticator=None):
-        self.check_capability = check_capability_func
+    def __init__(self, check_capability_func=None, authenticator=None):
+        if check_capability_func:
+            self.check_capability = check_capability_func
         self.authenticator = authenticator
+
+    def check_capability(self, identity, capability):
+        return NotImplemented()
 
     def identity_getter(self):
         return g.auth_identity
