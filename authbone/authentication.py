@@ -36,6 +36,8 @@ class Authenticator(object):
         self.currIdentity = identity
 
     def perform_authentication(self):
+        if self.is_authenticated():
+            return self.currIdentity
         auth_data = self.auth_data_getter()
         if auth_data is None:
             raise AuthDataDecodingException()
