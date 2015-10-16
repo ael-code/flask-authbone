@@ -4,11 +4,24 @@ from flask import g
 
 class Authenticator(object):
 
+    IDENTITY_KEY = 'auth_identity'
+
     def __init__(self, auth_data_getter=None, authenticate_func=None):
         if auth_data_getter:
             self.auth_data_getter = auth_data_getter
         if authenticate_func:
             self.authenticate = authenticate_func
+
+    def is_authenticated(self):
+        return hasattr(g, self.IDENTITY_KEY)
+
+    def get_identity(self):
+        return getattr(g, self.IDENTITY_KEY)
+
+    def set_identity(self, identity):
+        setattr(g, self.IDENTITY_KEY, identity)
+
+    currIdentity = property(get_identity, set_identity)
 
     def auth_data_getter(self):
         raise NotImplemented()
@@ -20,7 +33,7 @@ class Authenticator(object):
         return self.authenticate(auth_data)
 
     def identity_elaborator(self, identity):
-        g.auth_identity = identity
+        self.currIdentity = identity
 
     def perform_authentication(self):
         auth_data = self.auth_data_getter()
