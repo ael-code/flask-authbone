@@ -1,5 +1,5 @@
 from flask import Flask, Response
-from authbone import Authenticator
+from authbone import Authenticator, AuthDataDecodingException, NotAuthenticatedException
 from authbone.auth_data_getters import basic_auth_getter
 from werkzeug.datastructures import Headers
 import unittest
@@ -13,23 +13,25 @@ class MyAuthenticator(Authenticator):
             return {'username': auth_data.username, 'password': auth_data.password}
         return None
 
-    def send_401(self, message):
-        """Sends a 401 response that enables basic auth"""
-        return Response(message, 401,
-                        {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-    def bad_auth_data_callback(self, ex):
-        return self.send_401('Missing credentials')
-
-    def not_authenticated_callback(self, ex):
-        return self.send_401('User not recognized')
-
 
 authenticator = MyAuthenticator(basic_auth_getter)
 
 app = Flask(__name__)
 app.config['TESTING'] = True
 
+
+def send_401(message):
+    """Sends a 401 response that enables basic auth"""
+    return Response(message, 401,
+                    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+@app.errorhandler(AuthDataDecodingException)
+def bad_auth_data_callback(ex):
+    return send_401('Missing credentials')
+
+@app.errorhandler(NotAuthenticatedException)
+def not_authenticated_callback(ex):
+    return send_401('User not recognized')
 
 @app.route('/')
 @authenticator.requires_authentication

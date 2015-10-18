@@ -40,38 +40,25 @@ class Authenticator(object):
             return self.currIdentity
         auth_data = self.auth_data_getter()
         if auth_data is None:
-            raise AuthDataDecodingException()
+            return self.bad_auth_data_callback()
         identity = self.auth_data_validator(auth_data)
         if identity is None:
-            raise NotAuthenticatedException()
+            return self.not_authenticated_callback()
         self.identity_elaborator(identity)
         return identity
 
     def requires_authentication(self, f):
         @wraps(f)
         def decorated(*args, **kwargs):
-            try:
-                self.perform_authentication()
-            except AuthDataDecodingException, e:
-                return self.bad_auth_data_callback(e)
-            except NotAuthenticatedException, e:
-                return self.not_authenticated_callback(e)
+            self.perform_authentication()
             return f(*args, **kwargs)
         return decorated
 
-    def bad_auth_data_callback(self, authDataDecodingEx):
-        raise authDataDecodingEx
+    def bad_auth_data_callback(self):
+        raise AuthDataDecodingException()
 
-    def not_authenticated_callback(self, notAuthenticatedEx):
-        raise notAuthenticatedEx
-
-
-def def_bad_auth_data_callback(authDataDecodingEx):
-        raise authDataDecodingEx
-
-
-def def_not_authenticated_callback(notAuthenticatedEx):
-        raise notAuthenticatedEx
+    def not_authenticated_callback(self):
+        raise NotAuthenticatedException()
 
 
 class AuthDataDecodingException(Exception):
