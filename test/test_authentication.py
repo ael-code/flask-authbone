@@ -25,7 +25,7 @@ app.config['TESTING'] = True
 @app.route('/', methods=['POST'])
 @authenticator.requires_authentication
 def root():
-    return g.auth_identity['username']
+    return authenticator.currIdentity['username']
 
 
 class FlaskTestCase(unittest.TestCase):
