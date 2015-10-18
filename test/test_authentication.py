@@ -48,8 +48,9 @@ class FlaskTestCase(unittest.TestCase):
                                     'password': 'wrong'})
 
     def test_authenticated(self):
-        self.tc.post('/', data={'username': 'test',
-                                'password': 'test'})
+        r = self.tc.post('/', data={'username': 'test',
+                                    'password': 'test'})
+        self.assertEqual(r.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main()
