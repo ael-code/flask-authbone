@@ -25,13 +25,16 @@ def send_401(message):
     return Response(message, 401,
                     {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
+
 @app.errorhandler(AuthDataDecodingException)
 def bad_auth_data_callback(ex):
     return send_401('Missing credentials')
 
+
 @app.errorhandler(NotAuthenticatedException)
 def not_authenticated_callback(ex):
     return send_401('User not recognized')
+
 
 @app.route('/')
 @authenticator.requires_authentication

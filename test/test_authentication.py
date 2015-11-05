@@ -1,5 +1,5 @@
 import unittest
-from flask import Flask, g
+from flask import Flask
 from authbone import Authenticator, AuthDataDecodingException, NotAuthenticatedException
 from authbone.auth_data_getters import form_data_getter
 
