@@ -15,10 +15,19 @@ class Authorizator(object):
     def identity_getter(self):
         return g.auth_identity
 
-    def perform_authorization(self, capability):
+    def _perform_authorization(self, capability):
         if not self.check_capability(self.identity_getter(), capability):
             raise CapabilityMissingException(capability)
         return True
+
+    def __getattr__(self, name):
+        if name == 'perform_authorization':
+            func = self._perform_authorization
+            if self.authenticator:
+                func = self.authenticator.requires_authentication(func)
+            return func
+        else:
+            raise AttributeError
 
     def requires_capability(self, capability):
         def decorator(f):
@@ -26,8 +35,6 @@ class Authorizator(object):
             def decorated(*args, **kwargs):
                 self.perform_authorization(capability)
                 return f(*args, **kwargs)
-            if self.authenticator:
-                return self.authenticator.requires_authentication(decorated)
             return decorated
         return decorator
 
