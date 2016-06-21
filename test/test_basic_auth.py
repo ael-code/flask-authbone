@@ -3,7 +3,7 @@ from authbone import Authenticator, AuthDataDecodingException, NotAuthenticatedE
 from authbone.auth_data_getters import basic_auth_getter
 from werkzeug.datastructures import Headers
 import unittest
-import base64
+from base64 import b64encode
 
 
 class MyAuthenticator(Authenticator):
@@ -51,8 +51,8 @@ class TestBasicAuth(unittest.TestCase):
         pass
 
     def make_basic_auth_header(self, username, password):
-        base64string = base64.encodestring('{}:{}'.format(username, password).replace('\n', ''))
-        return Headers([('Authorization', 'Basic ' + base64string)])
+        basic_auth = b64encode('{}:{}'.format(username, password).replace('\n', '').encode())
+        return Headers([('Authorization', 'Basic ' + basic_auth.decode('utf-8'))])
 
     def test_no_auth_data(self):
         '''no authentication data should raise exception'''

@@ -1,5 +1,5 @@
 from flask import request
-from authentication import AuthDataDecodingException
+from .authentication import AuthDataDecodingException
 
 
 def form_data_getter():
