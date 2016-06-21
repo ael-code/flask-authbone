@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='Flask-Authbone',
-    version='0.2.2',
+    version='0.3',
     url='https://github.com/ael-code/flask-authbone',
     license='MIT',
     author='ael',
