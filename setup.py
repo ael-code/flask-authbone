@@ -7,7 +7,7 @@ setup(
     license='MIT',
     author='ael',
     author_email='tommy.ael@gmail.com',
-    description='Plugguble Auth framework for Flask.',
+    description='Pluggable Auth framework for Flask.',
     packages=[
         'authbone',
     ],
